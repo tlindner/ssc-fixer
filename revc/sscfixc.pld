@@ -1,0 +1,44 @@
+GAL16V8
+SSCFIXC
+
+CLK  E    Q    NC   NC   NC   NC   NC   NC   GND
+/OE  QX   C2   C1   C0   Q2   Q1   E2   E1   VCC
+
+; SSC clock fixer rev C -- ATF16V8B, registered mode, CLK = 28.63636 MHz.
+; Replaces Q on the cartridge (pin 7) with QX so the SSC's IC3 (E xor Q)
+; always produces 1.79 MHz for the PIC 7040 and AY-3-8913.
+;
+; E1/E2, Q1/Q2  two-stage synchronizers for the CoCo E and Q.
+; C2..C0        Gray-code counter of E-low/Q-low time, saturating at state 6 (101):
+;                 0 000, 1 001, 2 011, 3 010, 4 110, 5 111, 6 101
+;               counts while E2=0,Q2=0; clears while E2=1,Q2=0; holds while Q2=1.
+;               Q rises 140 ns (fast) or 279 ns (slow) after E falls. At 34.9 ns/tick
+;               the count reaches 4..5 (fast) or 6 (slow) before Q2 freezes it.
+; QX            combinational: raw Q gated by "count = 6". Each count step changes
+;               one bit, so the decode cannot glitch. QX follows Q within one GAL
+;               delay in slow cycles and stays 0 in fast cycles.
+
+E1.R = E
+E2.R = E1
+Q1.R = Q
+Q2.R = Q1
+
+C2.R = Q2 * C2
+     + /E2 * /Q2 * C2
+     + /E2 * /Q2 * C1 * /C0
+
+C1.R = Q2 * C1
+     + /E2 * /Q2 * /C2 * C0
+     + /E2 * /Q2 * /C2 * C1
+     + /E2 * /Q2 * C2 * C1 * /C0
+
+C0.R = Q2 * C0
+     + /E2 * /Q2 * /C1
+     + /E2 * /Q2 * C2
+
+QX = Q * C2 * /C1 * C0
+
+DESCRIPTION
+
+Speech/Sound Cartridge clock fixer, rev C. Pin 1 = 28.63636 MHz oscillator,
+pin 2 = CoCo E, pin 3 = CoCo Q, pin 11 = GND, pin 12 = QX to SSC pin 7.
