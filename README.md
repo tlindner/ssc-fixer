@@ -13,3 +13,7 @@ manual, which is not included here for copyright reasons. Copies are available f
 CoCo archive sites.
 
 Status: design only. No hardware has been built or tested yet.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
