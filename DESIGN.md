@@ -111,9 +111,9 @@ measures the time, which avoids RC one-shots and needs no trimming.
 
 | Ref | Part | Note |
 |---|---|---|
-| U1 | 74HC00 | 74HCT00 also works. Use HC/HCT, not LS, so the bus is barely loaded. |
+| U1 | 74HCT00 | Must be HCT: the CoCo's E/Q are TTL-level and may only reach 2.4 V |
 | U2 | 74HC164 | Must handle 28.6 MHz. 74HC is fine at 5 V; 74AC164 or 74ACT164 gives more margin. |
-| U3 | 74HC74 | |
+| U3 | 74HCT74 | HCT, because its clock is the CoCo's Q |
 | X1 | 28.63636 MHz 5 V full/half-size can oscillator | Standard NTSC ×8 part. 25–32 MHz works if you re-check the stage (see §4). |
 | R1 | 47 Ω | Series termination on Qx |
 | C1–C4 | 0.1 µF | Decoupling |
